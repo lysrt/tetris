@@ -158,7 +158,8 @@ func printBoard(board Board) {
 			case EmptyBlock:
 				fmt.Print(" ")
 			case PieceBlock:
-				fmt.Print("X")
+				// fmt.Print(string('\u25a2')) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
+				fmt.Print("O")
 			default:
 				fmt.Print("?")
 			}

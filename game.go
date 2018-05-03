@@ -13,11 +13,11 @@ type Game struct {
 	rotation       int
 	pieceX, pieceY int
 
-	input  chan byte
+	input  chan Key
 	output chan Board
 }
 
-func NewGame(input chan byte, output chan Board) *Game {
+func NewGame(input chan Key, output chan Board) *Game {
 	g := &Game{
 		score:    0,
 		piece:    nil,
@@ -40,26 +40,26 @@ func (g *Game) play(board Board) {
 
 		// What is the last key pressed?
 		select {
-		case stdin, ok := <-g.input:
+		case key, ok := <-g.input:
 			if !ok {
-				log.Fatal("Cannot read from channel ch")
+				log.Fatal("Cannot read Key from channel g.input")
 			} else {
 				// fmt.Println("Read input from stdin:", stdin)
-				switch stdin {
-				case 'a':
+				switch key {
+				case Left:
 					if board.PieceAllowed(g.piece, g.rotation, g.pieceX-1, g.pieceY) {
 						g.pieceX--
 					}
-				case 'd':
+				case Right:
 					if board.PieceAllowed(g.piece, g.rotation, g.pieceX+1, g.pieceY) {
 						g.pieceX++
 					}
-				case 'w':
+				case Up:
 					if board.PieceAllowed(g.piece, (g.rotation+1)%4, g.pieceX, g.pieceY) {
 						g.rotation++
 						g.rotation %= 4
 					}
-				case 's':
+				case Down:
 					if board.PieceAllowed(g.piece, g.rotation, g.pieceX, g.pieceY+1) {
 						g.pieceY++
 					} else {
@@ -70,6 +70,25 @@ func (g *Game) play(board Board) {
 							g.score += removedLines
 							time.Sleep(250 * time.Millisecond)
 						}
+					}
+				case Space:
+					// Fast drop
+					y := g.pieceY
+					allowed := board.PieceAllowed(g.piece, g.rotation, g.pieceX, y)
+					for allowed {
+						y++
+						allowed = board.PieceAllowed(g.piece, g.rotation, g.pieceX, y)
+					}
+					y--
+					if y < 0 {
+						y = 0 // avoid index out of range error
+					}
+					board.PutPiece(g.piece, g.rotation, g.pieceX, y)
+					g.piece = nil
+					if board.HasFullLine() {
+						removedLines := board.RemoveFullLines()
+						g.score += removedLines
+						time.Sleep(250 * time.Millisecond)
 					}
 				}
 			}
