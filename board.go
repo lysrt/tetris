@@ -150,23 +150,23 @@ func (b *Board) Copy() Board {
 }
 
 func printBoard(board Board) {
-	fmt.Println("|----------|")
+	fmt.Println("|--------------------|")
 	for _, line := range board.lines {
 		fmt.Print("|")
 		for _, block := range line {
 			switch block {
 			case EmptyBlock:
-				fmt.Print(" ")
+				fmt.Print("  ")
 			case PieceBlock:
-				// fmt.Print(string('\u25a2')) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
-				fmt.Print("O")
+				// fmt.Print(string("\u001B[41m\u25a2\u25a2\u001B[0m")) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
+				fmt.Print(string("\u001B[41m  \u001B[0m")) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
 			default:
-				fmt.Print("?")
+				fmt.Print("??")
 			}
 		}
 		fmt.Println("|")
 	}
-	fmt.Println("|----------|")
+	fmt.Println("|--------------------|")
 }
 
 func clearScreen() {

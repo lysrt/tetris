@@ -17,7 +17,7 @@ func main() {
 
 	game := NewGame(input, output)
 
-	board := NewBoard(10, 12)
+	board := NewBoard(10, 15)
 	game.play(board)
 }
 
