@@ -9,9 +9,14 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-type Piece [][][]int
+type Shape [][][]int
 
-var OPiece = Piece{
+type Piece struct {
+	Shape
+	Color Block
+}
+
+var OShape = Shape{
 	[][]int{
 		[]int{0, 0, 0, 0},
 		[]int{0, 1, 1, 0},
@@ -38,7 +43,7 @@ var OPiece = Piece{
 	},
 }
 
-var IPiece = Piece{
+var IShape = Shape{
 	[][]int{
 		[]int{0, 1, 0, 0},
 		[]int{0, 1, 0, 0},
@@ -65,7 +70,7 @@ var IPiece = Piece{
 	},
 }
 
-var TPiece = Piece{
+var TShape = Shape{
 	[][]int{
 		[]int{0, 1, 0, 0},
 		[]int{1, 1, 1, 0},
@@ -92,7 +97,7 @@ var TPiece = Piece{
 	},
 }
 
-var LPiece = Piece{
+var LShape = Shape{
 	[][]int{
 		[]int{0, 1, 0, 0},
 		[]int{0, 1, 0, 0},
@@ -119,7 +124,7 @@ var LPiece = Piece{
 	},
 }
 
-var JPiece = Piece{
+var JShape = Shape{
 	[][]int{
 		[]int{0, 1, 0, 0},
 		[]int{0, 1, 0, 0},
@@ -146,7 +151,7 @@ var JPiece = Piece{
 	},
 }
 
-var SPiece = Piece{
+var SShape = Shape{
 	[][]int{
 		[]int{0, 1, 1, 0},
 		[]int{1, 1, 0, 0},
@@ -173,7 +178,7 @@ var SPiece = Piece{
 	},
 }
 
-var ZPiece = Piece{
+var ZShape = Shape{
 	[][]int{
 		[]int{1, 1, 0, 0},
 		[]int{0, 1, 1, 0},
@@ -200,16 +205,16 @@ var ZPiece = Piece{
 	},
 }
 
-var Pieces = []Piece{
-	OPiece,
-	IPiece,
-	TPiece,
-	LPiece,
-	JPiece,
-	SPiece,
-	ZPiece,
+var Pieces = []*Piece{
+	&Piece{Shape: OShape, Color: ColorOPiece},
+	&Piece{Shape: IShape, Color: ColorIPiece},
+	&Piece{Shape: TShape, Color: ColorTPiece},
+	&Piece{Shape: LShape, Color: ColorLPiece},
+	&Piece{Shape: JShape, Color: ColorJPiece},
+	&Piece{Shape: SShape, Color: ColorSPiece},
+	&Piece{Shape: ZShape, Color: ColorZPiece},
 }
 
-func getRandomPiece() Piece {
+func getRandomPiece() *Piece {
 	return Pieces[rand.Intn(len(Pieces))]
 }

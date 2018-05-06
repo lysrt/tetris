@@ -34,7 +34,13 @@ type Block int
 
 const (
 	EmptyBlock Block = iota
-	PieceBlock
+	ColorOPiece
+	ColorIPiece
+	ColorTPiece
+	ColorLPiece
+	ColorJPiece
+	ColorSPiece
+	ColorZPiece
 )
 
 type Line []Block
@@ -59,23 +65,23 @@ func NewBoard(width, height int) Board {
 	return board
 }
 
-func (b *Board) PutPiece(p Piece, rot, x, y int) {
+func (b *Board) PutPiece(p *Piece, rot, x, y int) {
 	for j := y; j < y+4; j++ {
 		for i := x; i < x+4; i++ {
-			block := p[rot][j-y][i-x]
+			block := p.Shape[rot][j-y][i-x]
 			switch block {
 			case 0:
 			case 1:
-				b.lines[j][i] = PieceBlock
+				b.lines[j][i] = p.Color
 			}
 		}
 	}
 }
 
-func (b *Board) PieceAllowed(p Piece, rot, x, y int) bool {
+func (b *Board) PieceAllowed(p *Piece, rot, x, y int) bool {
 	for j := y; j < y+4; j++ {
 		for i := x; i < x+4; i++ {
-			pieceBlock := p[rot][j-y][i-x]
+			pieceBlock := p.Shape[rot][j-y][i-x]
 			if pieceBlock == 0 {
 				continue
 			}
@@ -88,7 +94,7 @@ func (b *Board) PieceAllowed(p Piece, rot, x, y int) bool {
 			}
 
 			belowBlock := b.lines[j][i]
-			if belowBlock == PieceBlock {
+			if belowBlock != EmptyBlock {
 				return false
 			}
 		}
@@ -102,7 +108,7 @@ func (b *Board) RemoveFullLines() int {
 		if isFull(b.lines[j]) {
 			b.moveLinesDownOn(j)
 			linesRemoved++
-			j++ // Clean this line again
+			j++ // Clean this line again as blocks go down
 		}
 	}
 	return linesRemoved
@@ -127,7 +133,7 @@ func (b *Board) HasFullLine() bool {
 
 func isFull(line Line) bool {
 	for _, block := range line {
-		if block != PieceBlock {
+		if block == EmptyBlock {
 			return false
 		}
 	}
@@ -157,9 +163,21 @@ func printBoard(board Board) {
 			switch block {
 			case EmptyBlock:
 				fmt.Print("  ")
-			case PieceBlock:
 				// fmt.Print(string("\u001B[41m\u25a2\u25a2\u001B[0m")) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
-				fmt.Print(string("\u001B[41m  \u001B[0m")) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
+			case ColorOPiece:
+				fmt.Print(string("\u001B[43m  \u001B[0m")) // Yellow
+			case ColorIPiece:
+				fmt.Print(string("\u001B[46m  \u001B[0m")) // Cyan
+			case ColorTPiece:
+				fmt.Print(string("\u001B[45m  \u001B[0m")) // Purple
+			case ColorLPiece:
+				fmt.Print(string("\u001B[47m  \u001B[0m")) // White
+			case ColorJPiece:
+				fmt.Print(string("\u001B[44m  \u001B[0m")) // Blue
+			case ColorSPiece:
+				fmt.Print(string("\u001B[41m  \u001B[0m")) // Red
+			case ColorZPiece:
+				fmt.Print(string("\u001B[42m  \u001B[0m")) // Green
 			default:
 				fmt.Print("??")
 			}

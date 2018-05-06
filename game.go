@@ -9,7 +9,7 @@ import (
 type Game struct {
 	score int
 
-	piece          Piece
+	piece          *Piece
 	rotation       int
 	pieceX, pieceY int
 
@@ -136,7 +136,7 @@ func (g *Game) printScore() {
 
 func (g *Game) lost(board Board) bool {
 	for _, block := range board.lines[0] {
-		if block == PieceBlock {
+		if block != EmptyBlock {
 			return true
 		}
 	}
