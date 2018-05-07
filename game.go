@@ -111,6 +111,22 @@ func (g *Game) play(board Board) {
 
 		// Apply the moving piece on the screen
 		if g.piece != nil {
+			// And the ghost piece
+			ghostY := g.pieceY
+			allowed := board.PieceAllowed(g.piece, g.rotation, g.pieceX, ghostY)
+			for allowed {
+				ghostY++
+				allowed = board.PieceAllowed(g.piece, g.rotation, g.pieceX, ghostY)
+			}
+			ghostY--
+			if ghostY < 0 {
+				ghostY = 0 // avoid index out of range error
+			}
+			color := g.piece.Color
+			g.piece.Color = Ghost
+			screen.PutPiece(g.piece, g.rotation, g.pieceX, ghostY)
+			g.piece.Color = color
+
 			screen.PutPiece(g.piece, g.rotation, g.pieceX, g.pieceY)
 		}
 

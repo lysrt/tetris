@@ -41,6 +41,7 @@ const (
 	ColorJPiece
 	ColorSPiece
 	ColorZPiece
+	Ghost
 )
 
 type Line []Block
@@ -163,7 +164,6 @@ func printBoard(board Board) {
 			switch block {
 			case EmptyBlock:
 				fmt.Print("  ")
-				// fmt.Print(string("\u001B[41m\u25a2\u25a2\u001B[0m")) // u25a0, 1, 2, 3, 6, (7), 8 are good blocks characters
 			case ColorOPiece:
 				fmt.Print(string("\u001B[43m  \u001B[0m")) // Yellow
 			case ColorIPiece:
@@ -178,6 +178,8 @@ func printBoard(board Board) {
 				fmt.Print(string("\u001B[41m  \u001B[0m")) // Red
 			case ColorZPiece:
 				fmt.Print(string("\u001B[42m  \u001B[0m")) // Green
+			case Ghost:
+				fmt.Print(string("\u001B[100m  \u001B[0m")) // Black
 			default:
 				fmt.Print("??")
 			}
