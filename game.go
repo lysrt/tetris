@@ -30,6 +30,10 @@ func NewGame(input chan Key, output chan Board) *Game {
 }
 
 func (g *Game) play(board Board) {
+
+	fallInterval := 250 * time.Millisecond
+	timer := time.NewTimer(fallInterval)
+
 	for !g.lost(board) {
 
 		if g.piece == nil {
@@ -92,7 +96,9 @@ func (g *Game) play(board Board) {
 					}
 				}
 			}
-		case <-time.After(250 * time.Millisecond):
+
+		// case <-time.After(fallInterval):
+		case <-timer.C:
 			// Do something when there is nothing to read from stdin
 			if board.PieceAllowed(g.piece, g.rotation, g.pieceX, g.pieceY+1) {
 				g.pieceY++
@@ -105,6 +111,7 @@ func (g *Game) play(board Board) {
 					time.Sleep(250 * time.Millisecond)
 				}
 			}
+			timer.Reset(fallInterval)
 		}
 
 		screen := board.Copy()
